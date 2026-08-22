@@ -9,7 +9,10 @@ Last updated: 2026-08-23
 2. **base44 release** — User deleted qaankunka.com from the old base44 app, unpublished, and deleted the app, releasing base44's Vercel claim on the apex host.
 3. Domain deleted from team peacolu and re-added fresh (Connect → Production); redeployed multiple times; dashboard shows **Valid Configuration**; www.qaankunka.com routes correctly (307 → apex).
 
-### Outstanding — apex edge routing
+#### Git integration
+- GitHub repo https://github.com/elikim4k-ai/qaankunka (private) connected to the Vercel project — pushes to `main` now auto-deploy production.
+
+## Outstanding — apex edge routing
 - `https://qaankunka.com` still returns Vercel NOT_FOUND at the edge (both 76.76.21.21 and 216.198.79.1), despite Valid Configuration, issued certs, and confirmed alias assignment on deploys. Diagnosis: the base44 claim release hasn't propagated through Vercel's edge yet (async cleanup). base44 release happened ~2026-08-23 NZ time.
 - **A recurring check runs every 30 minutes** (automation "每30分钟检查 qaankunka.com 是否上线") to detect when the apex goes live; it will notify. If still 404 after ~24h of checks, open a Vercel support ticket (vercel.com/help) asking to force-release qaankunka.com.
 - www.qaankunka.com serves the new site in the meantime (redirects to apex until apex activates, at which point apex serves directly).
