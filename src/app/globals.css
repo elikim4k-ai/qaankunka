@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #050508;
+  --color-bg-elevated: #0f0f14;
+  --color-bg-card: #08080d;
+  --color-border: #1a1a24;
+  --color-border-accent: #333344;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a0a0b0;
+  --color-text-muted: #666677;
+  --color-accent-cyan: #ffffff;
+  --color-accent-blue: #e2e8f0;
+  --color-accent-violet: #cbd5e1;
+  --color-accent-teal: #f8fafc;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(circle at 75% -10%, rgba(255, 255, 255, 0.08), transparent 30rem),
+      radial-gradient(circle at 10% 35%, rgba(255, 255, 255, 0.04), transparent 34rem);
+  }
+
+  main,
+  header,
+  footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  ::selection {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: var(--color-text-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #e2e8f0 50%,
+      #94a3b8 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  .glow-violet {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+  }
+
+  .section-padding {
+    @apply px-5 py-24 sm:px-6 lg:px-8 lg:py-32;
+  }
+
+  .container-narrow {
+    @apply mx-auto max-w-6xl;
+  }
+
+  .container-wide {
+    @apply mx-auto max-w-7xl;
+  }
+
+  .grid-field {
+    --grid-x: 50vw;
+    --grid-y: 50vh;
+    pointer-events: none;
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    opacity: 0.9;
+    background-image:
+      radial-gradient(circle 380px at var(--grid-x) var(--grid-y), rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.05) 55%, transparent 85%),
+      radial-gradient(circle at 1.5px 1.5px, rgba(255, 255, 255, 0.5) 1.5px, transparent 2px),
+      linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    background-size: auto, 56px 56px, 56px 56px, 56px 56px;
+    background-position: center, -1px -1px, 0 0, 0 0;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.98), rgba(0, 0, 0, 0.75));
+    transition: opacity 0.4s ease;
+  }
+
+  .grid-dots-layer {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle 3px at var(--grid-x) var(--grid-y), rgba(255, 255, 255, 0.95), transparent 240px);
+    pointer-events: none;
+  }
+
+  .section-grid {
+    background-image:
+      radial-gradient(circle at 1.5px 1.5px, rgba(255, 255, 255, 0.55) 1.5px, transparent 2px),
+      linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: -1px -1px;
+    mask-image: radial-gradient(ellipse at center, black 25%, transparent 85%);
+  }
+
+  .interactive-grid {
+    background-image:
+      radial-gradient(circle at 1.5px 1.5px, rgba(255, 255, 255, 0.6) 1.5px, transparent 2.5px),
+      linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-position: -1px -1px;
+  }
+
+  .surface-panel {
+    background:
+      linear-gradient(135deg, rgba(15, 15, 20, 0.95), rgba(8, 8, 12, 0.9)),
+      radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 50%);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  .interactive-link {
+    @apply relative inline-flex items-center gap-3 text-sm font-medium transition-colors;
+  }
+
+  .interactive-link::after {
+    content: "";
+    @apply absolute right-0 bottom-[-0.35rem] left-0 h-px origin-left scale-x-0 bg-current transition-transform duration-300;
+  }
+
+  .interactive-link:hover::after,
+  .interactive-link:focus-visible::after {
+    @apply scale-x-100;
+  }
+
+  @media (max-width: 767px) {
+    .grid-field {
+      opacity: 0.7;
+      background-size: auto, 64px 64px, 64px 64px, 64px 64px;
+    }
+
+    .section-grid {
+      background-size: 64px 64px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid-field {
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.12) 1px, transparent 1.5px),
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 80px 80px;
+      background-position: -1px -1px;
+    }
+  }
+}
