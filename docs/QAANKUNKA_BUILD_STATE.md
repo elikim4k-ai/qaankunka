@@ -2,22 +2,57 @@
 
 Last updated: 2026-08-23
 
-## FINAL STATUS (2026-08-23, session wrap-up)
+## FINAL STATUS (2026-08-23) — LIVE
 
-### Fully working
+**https://qaankunka.com is live and fully working.** No outstanding blockers.
+
+### Verified live (2026-08-23)
+- **All routes 200** via `www.qaankunka.com`: `/`, `/about`, `/technology`, `/applications`, `/research`, `/team`, `/ecosystem`, `/careers`, `/contact`, `/sitemap.xml`, `/robots.txt`, `/opengraph-image`.
+- **Content renders**: `/team` shows Elijah + Dingding, homepage shows the ORCHESTRATE headline, `/careers` shows both roles. Homepage ~86KB of HTML.
+- **Static assets 200**: `/qaankunka-logo.png`, `/team/elijah.png`, `/team/dingding.png`.
+- **APIs respond**: `POST /api/contact` and `POST /api/apply` return 400 on invalid payloads (validation active).
+- **DNS**: apex `A @ 216.198.79.1`; `www` CNAME → `3140e575520171db.vercel-dns-017.com` (Vercel new edge). Google Workspace MX/SPF/DKIM intact.
+- **Routing**: `qaankunka.com` → 308 → `www.qaankunka.com` → 200. `X-Matched-Path` header present, confirming the Next.js runtime is serving (no `X-Vercel-Error`).
+- **Deployment**: alias `qaankunka-fc5jvr2uf-peacolu.vercel.app` → both `www.qaankunka.com` and `qaankunka.com`.
+
+### Stack summary
 - **Codebase**: builds clean (Next.js 15, TS, ESLint), auto-deploys from GitHub `elikim4k-ai/qaankunka` (private) to Vercel on every push to `main`.
-- **Deployment**: Vercel project `qaankunka` (team `peacolu`, Hobby), production Ready.
+- **Deployment**: Vercel project `qaankunka` (team `peacolu`, Hobby), Framework Preset **Next.js**.
 - **Email**: contact form + job applications deliver to eli.kim4k@gmail.com via Gmail SMTP (App Password "Qaankunka AI"; SMTP_PASS must include the spaces). Env vars set on Vercel Production+Preview and in local `.env.local` (gitignored).
 - **Local dev**: `npm run dev` on port 3000.
 
-### Outstanding — domain activation (ONE manual step)
-- `qaankunka.com` apex routes at Vercel's edge (308 → www). Domain itself is valid (Squarespace registrar, expires 2026-10-13, protective locks only — NOT revoked; Workspace cancellation did not affect it).
-- `www.qaankunka.com` is attached to the project as Production but **pending DNS activation**: Vercel requires the www CNAME to be updated at Squarespace DNS:
-  - **CNAME `www` : `cname.vercel-dns.com` → `3140e575520171db.vercel-dns-017.com`**
-  - Must be done in a normal browser (Squarespace's Google re-verification popup fails inside the ZCode in-app browser).
-- Current Vercel domain config: `www.qaankunka.com` → Production env; `qaankunka.com` → 308 redirect to www.
-- After the CNAME change: verify with `curl -sL https://qaankunka.com/team | grep Elijah` (should print "Elijah" once live). If www still shows "DNS Change Recommended" in Vercel → Settings → Domains, click Refresh.
-- If still broken after that: Vercel support ticket (vercel.com/help) — ask them to check edge activation for qaankunka.com / www.qaankunka.com on team peacolu.
+### Optional / non-blocking
+- ~~Vercel "DNS Change Recommended" for `www`~~ — **DONE (2026-08-23).** The `www` CNAME was updated at Squarespace DNS from `cname.vercel-dns.com` to `3140e575520171db.vercel-dns-017.com`; `www` now resolves to Vercel's new edge (64.29.17.65 / 216.198.79.65) on both Google and Cloudflare resolvers. TLS verifies clean, all routes still 200, and Google Workspace MX/SPF/DKIM records were confirmed untouched.
+- Contact-form rate limiting is in-memory/process-local; add a host-level or WAF limit for dependable multi-instance protection.
+- End-to-end email delivery was verified in session 9 but not re-tested in session 10 (a live test sends a real email).
+
+---
+
+## Change Log (2026-08-23, Claude Code — session 10: ROOT CAUSE FOUND, site live)
+
+### The bug
+The site returned 404 on every route for ~19 hours. Sessions 7–9 diagnosed this as a **domain/DNS problem** and spent three sessions on DNS records, domain re-adds, base44 claim release, and edge-propagation waits. **That diagnosis was wrong.** The domain was correctly configured the whole time.
+
+The actual cause: the Vercel project's **Framework Preset was set to `Other` instead of `Next.js`**. With preset `Other`, Vercel ran the build but then published the `public/` folder as a bare static site and discarded `.next` entirely — so the Next.js server never served anything.
+
+### How it was proven
+1. `vercel project inspect` showed `Framework Preset: Other`, `Output Directory: 'public' if it exists, or '.'`.
+2. `public/` contains exactly three files — and those three were the *only* URLs returning 200 on the live site:
+   - `/qaankunka-logo.png` → 200 image/png
+   - `/team/elijah.png` → 200 image/png
+   - `/` , `/index.html`, `/favicon.ico` → 404
+3. The error header was `X-Vercel-Error: NOT_FOUND`, **not** `DEPLOYMENT_NOT_FOUND` — meaning the hostname resolved to a real deployment correctly; the deployment simply had no such file. This distinction is what ruled out the domain.
+4. `vercel alias ls` confirmed both `www.qaankunka.com` and `qaankunka.com` were correctly aliased to the current production deployment.
+5. Both the legacy edge (`76.76.21.93`) and the new edge (`216.198.79.1`) returned identical 404s via `curl --resolve` — consistent with an empty deployment, inconsistent with a DNS/edge fault.
+
+### The fix
+Project Settings → Build and Deployment → **Framework Preset: `Other` → `Next.js`**, then redeploy. (Settings apply only to new builds, so the redeploy is required.)
+
+### Lessons for future debugging
+- **`X-Vercel-Error: NOT_FOUND` ≠ `DEPLOYMENT_NOT_FOUND`.** The former means routing worked and the file is missing; the latter means the hostname isn't attached. Check this header before touching DNS.
+- If a Vercel site 404s but *some* asset paths return 200, the deployment is serving the wrong output directory — check the Framework Preset first.
+- Consider committing `vercel.json` with `{ "framework": "nextjs" }` so the preset is version-controlled and can't silently regress.
+- `.vercel.app` deployment URLs 302 to `vercel.com/sso-api` under Standard Protection, so they can't be smoke-tested anonymously — test the custom domain instead.
 
 ---
 
@@ -31,7 +66,9 @@ Last updated: 2026-08-23
 #### Git integration
 - GitHub repo https://github.com/elikim4k-ai/qaankunka (private) connected to the Vercel project — pushes to `main` now auto-deploy production.
 
-## Outstanding — apex edge routing
+## Outstanding — apex edge routing  
+> **[SUPERSEDED — resolved in session 10.]** The diagnosis below (base44 edge claim / propagation delay) was incorrect. The real cause was the Vercel Framework Preset being `Other` instead of `Next.js`. No Vercel support ticket is needed. **Action:** cancel the recurring 30-minute uptime check described below — the site is live.
+
 - `https://qaankunka.com` still returns Vercel NOT_FOUND at the edge (both 76.76.21.21 and 216.198.79.1), despite Valid Configuration, issued certs, and confirmed alias assignment on deploys. Diagnosis: the base44 claim release hasn't propagated through Vercel's edge yet (async cleanup). base44 release happened ~2026-08-23 NZ time.
 - **A recurring check runs every 30 minutes** (automation "每30分钟检查 qaankunka.com 是否上线") to detect when the apex goes live; it will notify. If still 404 after ~24h of checks, open a Vercel support ticket (vercel.com/help) asking to force-release qaankunka.com.
 - www.qaankunka.com serves the new site in the meantime (redirects to apex until apex activates, at which point apex serves directly).
