@@ -2,7 +2,26 @@
 
 Last updated: 2026-08-23
 
-## Latest Change Log (2026-08-22/23, ZCode / GLM — session 9: domain release)
+## FINAL STATUS (2026-08-23, session wrap-up)
+
+### Fully working
+- **Codebase**: builds clean (Next.js 15, TS, ESLint), auto-deploys from GitHub `elikim4k-ai/qaankunka` (private) to Vercel on every push to `main`.
+- **Deployment**: Vercel project `qaankunka` (team `peacolu`, Hobby), production Ready.
+- **Email**: contact form + job applications deliver to eli.kim4k@gmail.com via Gmail SMTP (App Password "Qaankunka AI"; SMTP_PASS must include the spaces). Env vars set on Vercel Production+Preview and in local `.env.local` (gitignored).
+- **Local dev**: `npm run dev` on port 3000.
+
+### Outstanding — domain activation (ONE manual step)
+- `qaankunka.com` apex routes at Vercel's edge (308 → www). Domain itself is valid (Squarespace registrar, expires 2026-10-13, protective locks only — NOT revoked; Workspace cancellation did not affect it).
+- `www.qaankunka.com` is attached to the project as Production but **pending DNS activation**: Vercel requires the www CNAME to be updated at Squarespace DNS:
+  - **CNAME `www` : `cname.vercel-dns.com` → `3140e575520171db.vercel-dns-017.com`**
+  - Must be done in a normal browser (Squarespace's Google re-verification popup fails inside the ZCode in-app browser).
+- Current Vercel domain config: `www.qaankunka.com` → Production env; `qaankunka.com` → 308 redirect to www.
+- After the CNAME change: verify with `curl -sL https://qaankunka.com/team | grep Elijah` (should print "Elijah" once live). If www still shows "DNS Change Recommended" in Vercel → Settings → Domains, click Refresh.
+- If still broken after that: Vercel support ticket (vercel.com/help) — ask them to check edge activation for qaankunka.com / www.qaankunka.com on team peacolu.
+
+---
+
+## Change Log (2026-08-22/23, ZCode / GLM — session 9: domain release)
 
 ### Completed
 1. **SMTP credentials live** — `SMTP_USER`/`SMTP_PASS` (Gmail App Password "Qaankunka AI"; note: Gmail requires the password WITH spaces) set on Vercel Production+Preview and in local `.env.local`. Test email delivered to eli.kim4k@gmail.com. Contact-form and job-application emails now deliver in production.
