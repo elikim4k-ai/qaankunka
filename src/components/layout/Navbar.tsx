@@ -22,7 +22,6 @@ export function Navbar() {
           className="flex items-center gap-3 font-mono text-[13px] font-semibold tracking-[0.24em] text-text-primary transition-colors hover:text-accent-cyan"
         >
           <Logo size={28} />
-          <span>QAANKUNKA</span>
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">

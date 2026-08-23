@@ -13,7 +13,6 @@ export function Footer() {
               className="flex items-center gap-3 font-mono text-sm font-semibold tracking-[0.2em] text-text-primary"
             >
               <Logo size={28} />
-              <span>QAANKUNKA</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-text-secondary">
               {siteConfig.tagline}
