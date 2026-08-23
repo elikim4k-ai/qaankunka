@@ -23,8 +23,10 @@ Last updated: 2026-08-23
 
 ### Optional / non-blocking
 - ~~Vercel "DNS Change Recommended" for `www`~~ — **DONE (2026-08-23).** The `www` CNAME was updated at Squarespace DNS from `cname.vercel-dns.com` to `3140e575520171db.vercel-dns-017.com`; `www` now resolves to Vercel's new edge (64.29.17.65 / 216.198.79.65) on both Google and Cloudflare resolvers. TLS verifies clean, all routes still 200, and Google Workspace MX/SPF/DKIM records were confirmed untouched.
+- ~~Consider committing `vercel.json`~~ — **DONE (2026-08-23, ZCode review).** `vercel.json` with `{ "framework": "nextjs" }` is committed (e47eb31); auto-deploy verified, site still 200.
+- ~~Recurring 30-min uptime check~~ — **DELETED** (2026-08-23, ZCode), as directed below.
 - Contact-form rate limiting is in-memory/process-local; add a host-level or WAF limit for dependable multi-instance protection.
-- End-to-end email delivery was verified in session 9 but not re-tested in session 10 (a live test sends a real email).
+- End-to-end email delivery was verified in session 9 but not re-tested in sessions 10/11 (a live test sends a real email).
 
 ---
 
