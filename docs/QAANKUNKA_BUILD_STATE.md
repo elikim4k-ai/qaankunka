@@ -30,6 +30,18 @@ Last updated: 2026-08-23
 
 ---
 
+## Change Log (2026-08-23, ZCode — session 11: Team removed, Apply page)
+
+### Changes
+1. **Team page removed entirely** — deleted `/team` route, `src/data/team.ts`, `public/team/` photos, footer "Team" link (`site.ts`), and sitemap entry. `/team` now 404s.
+2. **Careers Apply → dedicated page** — the inline form below the job cards was replaced by `/careers/apply?role=<id>` (server page + `ApplicationForm` client component with role preselect from the query param). Job cards link there; a "Back to open positions" link returns to `/careers`. The `/api/apply` endpoint is unchanged.
+
+### Verification
+- Local: type-check, lint, build pass; role preselect confirmed (Optical Engineer header on `?role=optical-engineer-dubai`); Apply click navigates correctly.
+- Live (auto-deploy 02ede41): `/team` 404, `/careers` 200 with both Apply hrefs, `/careers/apply` 200, no Team link in nav.
+
+---
+
 ## Change Log (2026-08-23, Claude Code — session 10: ROOT CAUSE FOUND, site live)
 
 ### The bug
