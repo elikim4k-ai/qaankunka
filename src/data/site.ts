@@ -19,7 +19,6 @@ export const footerLinks = [
   { label: "Technology", href: "/technology" },
   { label: "Applications", href: "/applications" },
   { label: "Research", href: "/research" },
-  { label: "Team", href: "/team" },
   { label: "Ecosystem", href: "/ecosystem" },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
