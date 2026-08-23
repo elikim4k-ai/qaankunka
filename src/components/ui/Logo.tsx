@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-// Intrinsic size of public/qaankunka-logo.jpg (wide wordmark).
-const LOGO_WIDTH = 2055;
-const LOGO_HEIGHT = 496;
+// Intrinsic size of public/qaankunka-logo.png (wide wordmark).
+const LOGO_WIDTH = 1018;
+const LOGO_HEIGHT = 245;
 
 interface LogoProps {
   /** Rendered height in px; width follows the image aspect ratio. */
@@ -14,7 +14,7 @@ export function Logo({ size = 28, className = "" }: LogoProps) {
   const width = Math.round((size * LOGO_WIDTH) / LOGO_HEIGHT);
   return (
     <Image
-      src="/qaankunka-logo.jpg"
+      src="/qaankunka-logo.png"
       alt="Qaankunka Logo"
       width={width}
       height={size}
